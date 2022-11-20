@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+ 
+    <title>Certification Validation System using Blockchain Technology</title>
+    <script src="../node_modules/web3/dist/web3.min.js"></script>
+    <style>
+      img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+</head>
+<body>
+<div class="container">
+    <img src="images/maishince-academy-03-full-logo.webp" class="center" alt="..." width="400" height="200">
+    <div class="form-group">
+        <label for="formName">Name</label>
+        <input class="form-control" id="formName" type="text" required>
+    </div>
+
+    <div class="form-group">
+        <label for="formCertificateName">Select certification</label>
+        <select class="form-control" id="formCertificateName">
+          <option value="" disabled selected hidden>Choose a certificate</option>
+          <option>Professional Diploma in Blockchain Engineering</option>
+          <option>Professional Diploma in Operation Management</option>
+          <option>Professional Diploma in Business Management</option>
+          <option>Professional Diploma in Project Management</option>
+          <option>Professional Diploma in Supply Chain Management</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="formGraduateYear">Select year of graduation</label>
+        <select class="form-control" id="formGraduateYear">
+          <option value="" disabled selected hidden>Choose a year</option>
+          <option>2018</option>
+          <option>2019</option>
+          <option>2020</option>
+          <option>2021</option>
+          <option>2022</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="button">Submit</button>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="../bundle.js"></script>
+
+</div>
+    
+</body>
+</html>

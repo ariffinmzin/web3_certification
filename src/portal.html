@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Certification Validation System using Blockchain Technology</title>
+<link rel="stylesheet" href=
+"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity=
+"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+
+<script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+</script>
+<script src=
+"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js">
+</script>
+<script src=
+"https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">
+</script>
+<script src="../node_modules/web3/dist/web3.min.js"></script>
+<!--
+<script>
+	$(document).ready(function () {
+
+	// Denotes total number of rows
+	var rowIdx = 0;
+
+	// jQuery button click event to add a row
+	$('#addBtn').on('click', function () {
+
+		// Adding a row inside the tbody.
+		$('#tbody').append(`<tr id="R${++rowIdx}">
+			<td class="row-index text-center">
+			<p>Row ${rowIdx}</p>
+			</td>
+			<td class="text-center">
+				<button class="btn btn-danger remove"
+				type="button">Remove</button>
+				</td>
+			</tr>`);
+	});
+
+	// jQuery button click event to remove a row.
+	$('#tbody').on('click', '.remove', function () {
+
+		// Getting all the rows next to the row
+		// containing the clicked button
+		var child = $(this).closest('tr').nextAll();
+
+		// Iterating across all the rows
+		// obtained to change the index
+		child.each(function () {
+
+		// Getting <tr> id.
+		var id = $(this).attr('id');
+
+		// Getting the <p> inside the .row-index class.
+		var idx = $(this).children('.row-index').children('p');
+
+		// Gets the row number from <tr> id.
+		var dig = parseInt(id.substring(1));
+
+		// Modifying row index.
+		idx.html(`Row ${dig - 1}`);
+
+		// Modifying row id.
+		$(this).attr('id', `R${dig - 1}`);
+		});
+
+		// Removing the current row.
+		$(this).closest('tr').remove();
+
+		// Decreasing total number of rows by 1.
+		rowIdx--;
+	});
+	});
+</script>
+-->
+
+<script>
+const web3 = new Web3(new Web3.providers.HttpProvider("https://goerli.infura.io/v3/176bfe18e46a44ffad02e020bc617e45"))
+
+web3.eth.getBlockNumber().then((result) => {
+  console.log("Latest Ethereum Block is ",result);
+});
+
+// update this contract address with your contract address
+const address = "0x9F526359cB2eF81b65C8B0898fB343D8dBEdACA6";
+
+var ABI = [
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "certCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "certs",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "certName",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "graduateYear",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_certName",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_graduateYear",
+        "type": "uint256"
+      }
+    ],
+    "name": "setCertificate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_certId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCertificate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getcertCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
+    
+var certificationContract = new web3.eth.Contract(ABI, address);
+
+async function initContractLogic() {
+
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const account = accounts[0];
+
+    console.log("Account : " + account)
+    window.ethereum.on('accountsChanged', function (accounts) {
+        // Time to reload your interface with accounts[0]!
+        console.log(accounts[0])
+    });
+
+    //const privateKey1 = Buffer.from('e9f79d11f48c68b19ea2e1e9db852e7770ceb265547bb8f0af01698d9a358445', 'hex');
+
+    $(document).ready(function () {
+
+        certificationContract.methods.getcertCount().call(function(error, result){
+            if (error) {
+                console.log('Error : ', error)
+            } else {
+
+                console.log('Total records in smart contract is ', result);
+                
+
+                    for (let i = 0; i < result; i++) {
+
+            
+
+                        certificationContract.methods.getCertificate(i+1).call(function(error, result){
+
+                            if (error) {
+                                console.log('Error : ', error)
+                            } else {
+    
+                                //setInterval(timingLoad, 3000);
+                                //function timingLoad() {
+                                
+                                  //$('#tbody').load(location.href + " #tbody", function() {
+
+                                    $('#tbody').append(`<tr id="R${i}">
+			                              <td class="row-index text-center">
+			                              <p>${result[0]}</p>
+			                              </td>
+			                              <td class="text-center">
+				                            <p>${result[1]}</p>
+				                            </td>
+                                    <td class="text-center">
+				                            <p>${result[2]}</p>
+				                            </td>
+                                    <td class="text-center">
+				                            <p>${result[3]}</p>
+				                            </td>
+			                              </tr>`);
+
+                                  //}); //function
+
+                                //} //timingLoad
+
+                            } //else
+
+                        }); //getCertificate
+
+                    } //for
+                    
+            } //else
+
+        }); //getcertCount()
+
+    }); //function
+
+} //initContractLogic()
+
+initContractLogic();
+
+</script>
+
+
+</head>
+
+<body>
+<div class="container pt-4">
+	<div class="table-responsive">
+	<table class="table table-bordered">
+		<thead>
+		<tr>
+			<th class="text-center">ID</th>
+			<th class="text-center">Name</th>
+            <th class="text-center">Certificate</th>
+            <th class="text-center">Year</th>
+		</tr>
+		</thead>
+    <div id="main"> <!-- refresh starts from div --> 
+		<tbody id="tbody">
+
+		</tbody>
+    </div>
+	</table>
+	</div>
+	<button class="btn btn-md btn-primary" id="addBtn" type="button" onClick="window.location.reload();">
+		Refresh
+	</button>
+</div>
+<!-- <script src="./portal.js"></script> -->
+</body>
+
+</html>
